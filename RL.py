@@ -2,7 +2,7 @@ import numpy as np
 import pickle
 import os
 from collections import defaultdict
-from celestia_mio import Celestia, Card, TreasureDeck
+from celestia import Celestia, Card, TreasureDeck
 from math import comb
 import math
 
@@ -757,11 +757,7 @@ class QLearningAgent:
 
     def update(self, obs: np.ndarray, action: int, reward: float) -> None:
         stato     = tuple(obs)
-        q_attuale = self.q_table[stato][action]
-
-        # Nessun q_futuro — il ruolo è cambiato quindi
-        # non possiamo stimare il valore del prossimo stato
-        self.q_table[stato][action] = q_attuale + reward
+        self.q_table[stato][action] += reward
 
     def decay_epsilon(self) -> None:
         # Riduce epsilon ad ogni episodio — esplora sempre meno
@@ -1209,51 +1205,3 @@ if __name__ == "__main__":
     agent_passeggero.load("q_table_passenger.pkl")
     stampa_q_table(agent_passeggero, nomi_azioni_passeggero, max_stati=100)
     '''
-
-    '''
-    nomi_azioni_capitano = {
-            0: "affronta",
-            1: "rotta alt.",
-        }
-    
-    agent_capitano = QLearningAgent()
-    agent_capitano.load("q_table_capitano.pkl")
-    stampa_q_table_completa(agent_capitano, nomi_azioni_capitano, max_stati=100)
-
-    
-    #q_table: dict = defaultdict(lambda: defaultdict(float))
-    agent = QLearningAgent()
-    agent.load("q_table_passeggero.pkl")
-    #agent.load("q_table_capitano.pkl")
-    #stato = (0, 0, 1, 1, 1, 2, 18, 3, 1, 5)
-
-    # Contatore per vedere quanti stati anomali ci sono
-    stati_anomali_trovati = 0
-
-    for stato in agent.q_table.keys():
-        # Sicurezza: verifichiamo che lo stato abbia la lunghezza corretta (11 elementi)
-        if len(stato) == 11:
-            # L'indice 8 corrisponde alla colonna dei cannoni nel tuo obs
-            num = stato[5]
-            
-            # Se preferisci cercare "maggiore o uguale a 14" puoi mettere >= 14
-            if num >= 21:
-                stati_anomali_trovati += 1
-                #print(f"Stato trovato: {stato}")
-                #print(f"  -> Valori Q per questo stato: {dict(agent.q_table[stato])}")
-
-    print("\n--- FINE RICERCA ---")
-    print(f"Totale stati anomali: {stati_anomali_trovati}")
-    '''
-
-    # Cosa restituisce get per action=1?
-    #print(agent.q_table[stato][0])
-    #print(agent.q_table[stato][1])
-
-    # Cosa sceglie max?
-    #result = max(range(0, 2), key=lambda a: agent.q_table[stato][a])
-    #print(result)   # → dovrebbe essere 1
-    
-
-    #analizza_q_table("q_table_passeggero.pkl")
-    #analizza_q_table("q_table_capitano.pkl")

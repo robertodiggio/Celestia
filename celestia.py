@@ -341,7 +341,7 @@ class Celestia:
                 continue
             if white_faces:
                 prob_stay = -1
-            
+            '''
             elif len(captain.hand) <= dangers:
                 prob_stay = 1
             elif len(captain.hand) in (dangers + 1, dangers * 2):
@@ -350,7 +350,7 @@ class Celestia:
                 prob_stay = 0.3 + self.city_id / 35
             else:
                 prob_stay = self.city_id / 35
-            
+            '''
             stay = random.random() > prob_stay
             if stay == False:
                 self.landing(p)
